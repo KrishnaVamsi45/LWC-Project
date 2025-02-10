@@ -1,0 +1,116 @@
+<template>
+    <lightning-card title="Project Management">
+        <div class="slds-m-around_medium">
+            <lightning-button
+                label="New Project"
+                icon-name="utility:add"
+                onclick={handleNewProject}
+                class="slds-m-bottom_medium"
+            ></lightning-button>
+
+            <lightning-combobox
+                name="status"
+                label="Filter by Status"
+                value={selectedStatus}
+                options={statusOptions}
+                onchange={handleStatusChange}
+                class="slds-m-bottom_small"
+            ></lightning-combobox>
+
+            <lightning-datatable
+                data={paginatedProjects}
+                columns={columns}
+                key-field="Id"
+                onsave={handleCellChange}
+                onrowaction={handleRowAction}
+                onsort={updateColumnSorting}
+                draft-values={draftValues}
+            ></lightning-datatable>
+
+            <div class="slds-m-top_medium">
+                <lightning-button-group>
+                    <lightning-button
+                        label="Previous"
+                        onclick={handlePageChange}
+                        disabled={isPreviousDisable}
+                    ></lightning-button>
+                    <lightning-button
+                        label="Next"
+                        onclick={handlePageChange}
+                        disabled={isNextDisable}
+                    ></lightning-button>
+                </lightning-button-group>
+            </div>
+
+            <div  class="slds-m-top_medium">
+    <lightning-button label="Clone Project" onclick={handleCloneProject} icon-name="utility:clone" class="slds-m-around_small"></lightning-button>
+</div>
+
+             <div class="slds-m-top_medium slds-align_absolute-center">
+            <lightning-button label="Export to CSV" onclick={exportToCSV} icon-name="utility:download" variant="brand"></lightning-button>
+        </div>
+
+            <template if:true={isEditing}>
+                <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+
+                        <header class="slds-modal__header">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleCancel}>
+                                <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <h2 class="slds-text-heading_medium">{modalTitle}</h2>
+                        </header>
+
+                        <div class="slds-modal__content slds-p-around_medium">
+                            <lightning-input 
+                                label="Project Name" 
+                                name="Name" 
+                                value={projectToEdit.Name} 
+                                onchange={handleInputChange}>
+                            </lightning-input>
+
+                            <lightning-combobox 
+                                label="Status" 
+                                name="Status__c" 
+                                value={projectToEdit.Status__c} 
+                                options={statusOptions} 
+                                onchange={handleInputChange}>
+                            </lightning-combobox>
+
+                            <lightning-input 
+                                label="Start Date" 
+                                name="Start_Date__c" 
+                                type="date" 
+                                value={projectToEdit.Start_Date__c} 
+                                onchange={handleInputChange}>
+                            </lightning-input>
+
+                            <lightning-input 
+                                label="End Date" 
+                                name="End_Date__c" 
+                                type="date" 
+                                value={projectToEdit.End_Date__c} 
+                                onchange={handleInputChange}>
+                            </lightning-input>
+
+                            <lightning-input 
+                                label="Deadline Days" 
+                                name="DeadLine_Days__c" 
+                                type="number" 
+                                value={projectToEdit.DeadLine_Days__c} 
+                                onchange={handleInputChange}>
+                            </lightning-input>
+                        </div>
+
+                        <footer class="slds-modal__footer">
+                            <lightning-button variant="neutral" label="Cancel" onclick={handleCancel}></lightning-button>
+                            <lightning-button variant="brand" label="Save" onclick={saveProject}></lightning-button>
+                        </footer>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </template>
+        </div>
+    </lightning-card>
+</template>
